@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+enum SearchType
+{
+	NAME, YEAR;
+};
+
+
 public class Store {
-	private ArrayList<Wine> wineList=new ArrayList<Wine>();
-	private ArrayList<Order> orderList=new ArrayList<Order>();
-	private ArrayList<Client> clientList=new ArrayList<Client>();
-	private ArrayList<Seller> sellerList=new ArrayList<Seller>();
-	private Map<Client,Wine> notifRequest=new HashMap<Client,Wine>();
+	private static ArrayList<Wine> wineList=new ArrayList<Wine>();
+	private static ArrayList<Order> orderList=new ArrayList<Order>();
+	private static ArrayList<Client> clientList=new ArrayList<Client>();
+	private static ArrayList<Seller> sellerList=new ArrayList<Seller>();
+	private static Map<Client,Wine> notifRequest=new HashMap<Client,Wine>();
 	
-	private <T> boolean contains(ArrayList<T> list, T obj)
+	private static <T> boolean contains(ArrayList<T> list, T obj)
 	{
 		for(T t: list)
 		{
@@ -23,7 +29,7 @@ public class Store {
 		return false;
 	}
 	
-	private <T> T get(ArrayList<T> list, T obj)
+	private static <T> T get(ArrayList<T> list, T obj)
 	{
 		for(T t: list)
 		{
@@ -35,21 +41,42 @@ public class Store {
 		return null;
 	}
 	
+	private static Wine getWineByID(int id)
+	{
+		for(Wine w: wineList)
+		{
+			if(w.getID() == id)
+				return w;
+		}
+		return null;
+	}
+	
+
+	private static Client getClientByID(int id)
+	{
+		for(Client w: clientList)
+		{
+			if(w.getID() == id)
+				return w;
+		}
+		return null;
+	}
 	
 	
-	public void registerUser(Client c)
+	
+	public static void registerUser(Client c)
 	{
 		if(!contains(clientList,c))
 			clientList.add(c);
 	}
 	
-	public void registerSeller(Seller s)
+	public static void registerSeller(Seller s)
 	{
 		if(!contains(sellerList,s))
 			sellerList.add(s);
 	}
 	
-	public void addWine(Wine w)
+	public static void addWine(Wine w)
 	{
 		if(!contains(wineList, w))
 			wineList.add(w);
@@ -60,7 +87,7 @@ public class Store {
 		}
 	}
 	
-	public void restockWine(Wine w, int extra_n)
+	public static void restockWine(Wine w, int extra_n)
 	{
 		if(contains(wineList, w))
 			get(wineList, w).setNumber(w.getNumber() + extra_n);
@@ -69,7 +96,7 @@ public class Store {
 			
 	}
 	
-	public boolean loginUser(String email, String password)
+	public static boolean loginUser(String email, String password)
 	{
 		for(Client c: clientList)
 		{
@@ -79,7 +106,7 @@ public class Store {
 		return false;
 	}
 	
-	public boolean loginSeller(String email, String password)
+	public static boolean loginSeller(String email, String password)
 	{
 		for(Seller c: sellerList)
 		{
@@ -87,6 +114,52 @@ public class Store {
 				return true;
 		}
 		return false;
+	}
+	
+	public static ArrayList<Wine> search(String search_text, SearchType type)
+	{
+		ArrayList<Wine> res = new ArrayList<Wine>();
+		
+		if(type == SearchType.NAME)
+		{
+			for(Wine w: wineList)
+				if(w.getName() == search_text)
+					res.add(w);
+			
+		}
+		else if(type == SearchType.YEAR)
+		{
+			for(Wine w: wineList)
+				if(w.getYear() == Integer.parseInt(search_text))
+					res.add(w);
+		}
+		
+		return res;
+		
+	}
+	
+	
+	public static boolean buy(int wine_id, int amount, int client_id)
+	{
+		Wine w = getWineByID(wine_id);
+		if(w != null)
+		{
+			if(w.getNumber() >= amount)
+			{
+				w.setNumber(w.getNumber() - amount);
+				orderList.add(new Order(getClientByID(client_id), new Wine(w.getName(), w.getProducer(), w.getYear(), w.getTechnicalNotes(), w.getGrapeType(), amount)));
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+		
 	}
 	
 }
