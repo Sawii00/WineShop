@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 /**
  * The {@code Person} class defines a generic person who attends the club. <p>
- * This class will be extended by the Member Class and Admin Class to distinguish 
+ * This class will be extended by the Seller Class and Client Class to distinguish 
  * between different roles. <p>
  * The {@code Person} class defines methods to get person's name, surname, email and passwords
- * and to set them.
+ * and to set them. <p>
+ * There is also a list of messages that notifies the seller if there are some wines that
+ * need to be restocked or the client if the wine that he ordered is available.
  */
 
 public class Person 
@@ -46,7 +48,7 @@ public class Person
 
 	/**
 	 * Setter for the person's name.
-	 * @param name
+	 * @param name of the person.
 	 */
 	protected void setName(String name)
 	{
@@ -55,7 +57,7 @@ public class Person
 
 	/**
 	 * Getter for the person's surname.
-	 * @return the person's surname.
+	 * @return surname of the person.
 	 */
 	public String getSurname() 
 	{
@@ -64,7 +66,7 @@ public class Person
 	
 	/**
 	 * Setter for the person's surname.
-	 * @param surname
+	 * @param surname of the person.
 	 */
 
 	protected void setSurname(String surname) 
@@ -74,7 +76,7 @@ public class Person
 
 	/**
 	 * Getter for the person's email.
-	 * @return the person's email.
+	 * @return email of the person.
 	 */
 	public String getEmail() 
 	{
@@ -83,7 +85,7 @@ public class Person
 	
 	/**
 	 * Getter for the person's password.
-	 * @return the person's password.
+	 * @return password of the person.
 	 */
 
 	public String getPassword()
@@ -93,7 +95,7 @@ public class Person
 	
 	/**
 	 * Setter for the person's email.
-	 * @param email.
+	 * @param email of the person.
 	 */
 	protected void setEmail(String email)
 	{
@@ -102,7 +104,7 @@ public class Person
 	
 	/**
 	 * Setter for the person's password.
-	 * @param password.
+	 * @param passowrd of the person.
 	 */
 	
 	protected void setPassword(String password)
@@ -124,11 +126,29 @@ public class Person
 	 * Prints to the standard output the messages' list. 
 	 */
 	
-	public void displayMessage() 
+	public void displayMessages() 
 	{
 		for (String m: messages) {
 			System.out.println(m);
 		}
 	}
 	
+	/**
+	 * Clears all messages.
+	 */
+	public void deleteMessages()
+	{
+		messages.clear();
+	}
+	
+	/**
+	 * Adds a new message to the list.
+	 * @param m the message.
+	 */
+	public void newMessage(String m)
+	{
+		messages.add(m);
+	}
+	
 }
+	
