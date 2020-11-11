@@ -8,12 +8,14 @@ import java.util.Random;
  * The {@code Client} class defines a person that: <p>
  * - Can buy wines. <p>
  * - Can order wine if it is not available in the store. <p>
- * Each client is defined by an Id.
+ * Each client is defined by an Id. <p>
+ * Implements the {@code Observer} Interface.
  */
-public class Client extends Person {
+public class Client extends LoggableUser implements Observer{
 
 	private int id;	
-	
+	protected ArrayList<String> messages=new ArrayList<String>();
+
 	/**
 	 * Class constructor. <p>
 	 * Invokes the parent {@code Person}'s constructor. 
@@ -65,7 +67,37 @@ public class Client extends Person {
 		this.id = id;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * */
+	@Override
+	public void displayMessages() 
+	{
+		for (String m: messages) {
+			System.out.println(m);
+		}
+	}
 	
+	/**
+	 * {@inheritDoc}
+	 * */
+	@Override
+	public void deleteMessages()
+	{
+		messages.clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * */
+	@Override
+	public void newMessage(String m)
+	{
+		messages.add(m);
+	}
+	
+	
+
 	
 	
 }

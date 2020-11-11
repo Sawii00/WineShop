@@ -1,5 +1,12 @@
 package assegnamento2;
 
+
+/*
+TODO: 
+print in giro
+commenta LoggableUser
+
+*/
 public class Main {
 
 	public static void main(String[] args) {
@@ -7,21 +14,21 @@ public class Main {
 
 		Store store = new Store();
 		
-		store.loginClient("pippo@gmail", "1234");
+		store.login("pippo@gmail", "1234");
 		store.displayWines();
 		store.buy(100002, 20, false);
 		store.displayWines();
-		store.loginClient("bianchi@gmail", "3434");
+		store.login("bianchi@gmail", "3434");
 		store.buy(100000, 10, false);
 		store.displayWines();
-		store.loginClient("rossi@gmail", "1212");
+		store.login("rossi@gmail", "1212");
 		store.displayWines();
 		store.buy(100000, 15, true);
 		store.displayWines();
-		store.loginSeller("pindozz@gmail", "1111");
+		store.login("pindozz@gmail", "1111");
 		store.restockWine(100000, 15);
 		store.displayWines();
-		store.loginClient("rossi@gmail", "1212");
+		store.login("rossi@gmail", "1212");
 
 	}
 

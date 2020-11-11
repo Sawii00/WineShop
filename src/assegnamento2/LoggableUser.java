@@ -1,6 +1,5 @@
 package assegnamento2;
 
-import java.util.ArrayList;
 
 /**
  * The {@code Person} class defines a generic person who attends the club. <p>
@@ -12,7 +11,7 @@ import java.util.ArrayList;
  * need to be restocked or the client if the wine that he ordered is available.
  */
 
-public class Person 
+public abstract class LoggableUser
 {
 	/**
 	 * Class constructor.
@@ -23,7 +22,7 @@ public class Person
 	 * @param password password of the  person.
 	 */
 
-	public Person(String name, String surname, String email, String password)
+	public LoggableUser(String name, String surname, String email, String password)
 	{
 		this.name = name;
 		this.surname = surname;
@@ -35,7 +34,7 @@ public class Person
 	protected String surname;
 	protected String email;
 	protected String password;
-	protected ArrayList<String> messages=new ArrayList<String>();
+	 
 	
 	/**
 	 * Getter for the person's name.
@@ -122,33 +121,7 @@ public class Person
 		return this.name+" "+this.surname+", "+this.email;
 	}
 	
-	/**
-	 * Prints to the standard output the messages' list. 
-	 */
-	
-	public void displayMessages() 
-	{
-		for (String m: messages) {
-			System.out.println(m);
-		}
-	}
-	
-	/**
-	 * Clears all messages.
-	 */
-	public void deleteMessages()
-	{
-		messages.clear();
-	}
-	
-	/**
-	 * Adds a new message to the list.
-	 * @param m the message.
-	 */
-	public void newMessage(String m)
-	{
-		messages.add(m);
-	}
+
 	
 }
 	

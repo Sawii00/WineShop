@@ -10,7 +10,8 @@ import java.util.Map.Entry;
 * The class {@code Store} manages the Wine Shop through methods that work on the inner data structures. <p>
 * It contains lists of wines, clients, sellers and orders. <p>
 * {@code notifRequest} holds the requests of restock notifications made by the users. <p>
-* {@code currSeller} and {@code currClient} hold the currently logged in user (Client and Sellers cannot be simultanously logged in).
+* {@code currSeller} and {@code currClient} hold the currently logged in user (Client and Sellers cannot be simultaneously logged in). <p>
+* NOTE: this implementation does not allow for multiple users logged in simultaneously. Modifications are required in case multiple users have to be served in parallel.
 */
 
 enum SearchType
@@ -23,8 +24,16 @@ public class Store {
 	
 	private ArrayList<Wine> wineList=new ArrayList<Wine>();
 	private ArrayList<Order> orderList=new ArrayList<Order>();
-	private ArrayList<Client> clientList=new ArrayList<Client>();
-	private ArrayList<Seller> sellerList=new ArrayList<Seller>();
+	
+	
+	private ArrayList<LoggableUser> userList = new ArrayList<LoggableUser>();
+	
+	/**
+	 * Map of notification requests: <p>
+	 * - Wine ID <p>
+	 * - Client ID <p>
+	 * - Amount of bottles
+	 * */
 	private Map<Integer, Entry <Integer,Integer>> notifRequest=new HashMap<Integer,Entry<Integer,Integer>>();
 	
 	private Client currClient = null;
@@ -36,11 +45,11 @@ public class Store {
 	*/
 	public Store()
 	{
-		clientList.add(new Client("Pippo", "Baudo", "pippo@gmail", "1234"));
-		clientList.add(new Client("Mario", "Rossi", "rossi@gmail", "1212"));
-		clientList.add(new Client("Giuseppe", "Bianchi", "bianchi@gmail", "3434"));
+		userList.add(new Client("Pippo", "Baudo", "pippo@gmail", "1234"));
+		userList.add(new Client("Mario", "Rossi", "rossi@gmail", "1212"));
+		userList.add(new Client("Giuseppe", "Bianchi", "bianchi@gmail", "3434"));
 		
-		sellerList.add(new Seller("Ale", "Pindozzi", "pindozz@gmail", "1111"));
+		userList.add(new Seller("Ale", "Pindozzi", "pindozz@gmail", "1111"));
 		
 		wineList.add(new Wine(100000, "Cabernet", "Cantina Bianchi", 1980, "Buono", "Uva", 10));
 		wineList.add(new Wine(100001, "Cabernet2", "Cantina Rossi", 2011, "Buono", "Uva", 5));
@@ -79,6 +88,20 @@ public class Store {
 		}
 		return false;
 	}
+	
+	
+	
+	private boolean alreadyRegistered(LoggableUser usr)
+	{
+		
+		for(LoggableUser u: userList)
+		{
+			if(u.toString() == usr.toString())
+				return true;
+		}
+		return false;
+	}
+	
 	
 	/**
 	* Generic method that returns the object reference contained in the specified list of the specified object. <p>
@@ -129,41 +152,30 @@ public class Store {
 	*/
 	private Client getClientByID(int id)
 	{
-		for(Client w: clientList)
+		for(LoggableUser w: userList)
 		{
-			if(w.getID() == id)
-				return w;
+			if(w instanceof Client && ((Client)w).getID() == id)
+				return (Client)w;
 		}
 		return null;
 	}
 	
 
 	/**
-	* It allows the registration of a new {@code Client} to the Store. <p>
-	* @param client the client to be registered.
+	* It allows the registration of a new {@code LoggableUser} to the Store. <p>
+	* @param usr the client or seller to be registered.
 	*/
 	
-	public void registerClient(Client c)
+	public void register(LoggableUser usr)
 	{
-		if(!contains(clientList,c))
+		if(!alreadyRegistered(usr))
 		{
-			c.setID(clientList.size());
-			clientList.add(c);
-	
+			if(usr instanceof Client)
+				((Client)usr).setID(userList.size());
+			userList.add(usr);
 		}
 	}
-	
-	/**
-	* It allows the registration of a new {@code Seller} to the Store. <p>
-	* @param seller the seller to be registered.
-	*/
-	
-	public void registerSeller(Seller s)
-	{
-		if(!contains(sellerList,s))
-			sellerList.add(s);
-	}
-	
+
 	/**
 	 * Allows to add a wine to the wineList. <p>
 	 * At first this method check if there is a seller logged in. <p>
@@ -226,46 +238,29 @@ public class Store {
 	}
 	
 	/**
-	* It allows the login of a {@code Client} to the Store. <p>
-	* @param email the client's email.
-	* @param password the client's password.
+	* It allows the login of a {@code LoggableUser} to the Store. <p>
+	* @param email the user's email.
+	* @param password the user's password.
 	*/
-	public boolean loginClient(String email, String password)
+	public boolean login(String email, String password)
 	{
 		logout();
-		for(Client c: clientList)
+		for(LoggableUser usr: userList)
 		{
-			if(c.getEmail() == email && c.getPassword() == password)
+			if(usr.getEmail() == email && usr.getPassword() == password)
 			{
-				currClient = c;
-				c.displayMessages();
-				c.deleteMessages();
+				if(usr instanceof Client)
+					currClient = (Client)usr;
+				else
+					currSeller = (Seller)usr;
+				((Observer)usr).displayMessages();
+				((Observer)usr).deleteMessages();
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	/**
-	* It allows the login of a {@code Seller} to the Store. <p>
-	* @param email the seller's email.
-	* @param password the seller's password.
-	*/
-	public boolean loginSeller(String email, String password)
-	{
-		logout();
-		for(Seller s: sellerList)
-		{
-			if(s.getEmail() == email && s.getPassword() == password)
-			{
-				currSeller = s;
-				s.displayMessages();
-				s.deleteMessages();
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	/**
 	 * Prints to the standard output the wineList. <p>
@@ -374,9 +369,10 @@ public class Store {
 			}
 			else if (w.getNumber()==amount)
 			{
-				for (Seller s: sellerList)
+				for (LoggableUser s: userList)
 				{
-					s.newMessage("Wine: "+w.getID()+" needs to be restocked.");
+					if(s instanceof Seller)
+						((Seller)s).newMessage("Wine: "+w.getID()+" needs to be restocked.");
 				}
 				
 				w.setNumber(w.getNumber() - amount);
