@@ -9,7 +9,8 @@ import java.util.Random;
  * - Can buy wines. <p>
  * - Can order wine if it is not available in the store. <p>
  * Each client is defined by an Id. <p>
- * Implements the {@code Observer} Interface.
+ * Implements the {@code Observer} Interface to allow for notifications receipt <p>
+ * Extends the {@code LoggableUser} to implement login functionality. 
  */
 public class Client extends LoggableUser implements Observer{
 
@@ -18,8 +19,8 @@ public class Client extends LoggableUser implements Observer{
 
 	/**
 	 * Class constructor. <p>
-	 * Invokes the parent {@code Person}'s constructor. 
- 	 * @see Person 
+	 * Invokes the parent {@code LoggableUser}'s constructor. 
+ 	 * @see LoggableUser 
  	 
  	 * The id, if not specified, is generated random.
 	 * @param name of the client.
@@ -29,14 +30,12 @@ public class Client extends LoggableUser implements Observer{
 	 */
 	public Client(String name, String surname, String email, String password) {
 		super(name, surname, email, password);
-		Random r = new Random();
-		id = r.nextInt();
 	}
 	
 	/**
 	 * Class constructor. <p>
-	 * Invokes the parent {@code Person}'s constructor. 
- 	 * @see Person 
+	 * Invokes the parent {@code LoggableUser}'s constructor. 
+ 	 * @see LoggableUser 
  	 
  	 * @param id of the client.
 	 * @param name of the client.
@@ -45,27 +44,9 @@ public class Client extends LoggableUser implements Observer{
 	 * @param password of the client.
 	 */
 	public Client(int id, String name, String surname, String email, String password) {
-		super(name, surname, email, password);
-		this.id = id;
+		super(id, name, surname, email, password);
 	}
 	
-	/**
-	 * Getter for the client's Id.
-	 * @return the client's Id.
-	 */
-	public int getID()
-	{
-		return id;
-	}
-	
-	/**
-	 * Setter for the client's Id.
-	 * @param the client's Id.
-	 */
-	public void setID(int id)
-	{
-		this.id = id;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -73,8 +54,13 @@ public class Client extends LoggableUser implements Observer{
 	@Override
 	public void displayMessages() 
 	{
-		for (String m: messages) {
-			System.out.println(m);
+		if(messages.size() > 0)
+		{
+			System.out.println("NEW MESSAGES:");
+			for (String m: messages) {
+				System.out.println(m);
+			}
+			System.out.println();
 		}
 	}
 	

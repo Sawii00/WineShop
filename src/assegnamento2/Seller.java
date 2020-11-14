@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 /**
  * The {@code Seller} class defines a person that: <p>
- * - Receives a notification if some bottles of a type of wine have run out. <p>
- * - Can restockes the bottles of not available wine. <p>
- *  Implements the {@code Observer} Interface.
+ * - Can manage the store through wine adding or removal <p>
+ * - Can re-stock the bottles of wines that are not available. <p>
+ * - Receives a notification if the store has run out of bottles of a specific wine. <p>
+ * Implements the {@code Observer} Interface to allow for notification receipts. <p>
+ * Extends the {@code LoggableUser} to implement login functionality. 
  */
 
 public class Seller extends LoggableUser implements Observer{
@@ -16,8 +18,8 @@ public class Seller extends LoggableUser implements Observer{
 
 	/**
 	 * Class constructor. <p>
-	 * Invokes the parent {@code Person}'s constructor. 
- 	 * @see Person 
+	 * Invokes the parent {@code LoggableUser}'s constructor. 
+ 	 * @see LoggableUser 
  	 
 	 * @param name of the seller.
 	 * @param surname of the seller.
@@ -26,7 +28,6 @@ public class Seller extends LoggableUser implements Observer{
 	 */
 	public Seller(String name, String surname, String email, String password) {
 		super(name, surname, email, password);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
@@ -35,8 +36,13 @@ public class Seller extends LoggableUser implements Observer{
 	@Override
 	public void displayMessages() 
 	{
-		for (String m: messages) {
-			System.out.println(m);
+		if(messages.size() > 0)
+		{
+			System.out.println("NEW MESSAGES:");
+			for (String m: messages) {
+				System.out.println(m);
+			}
+			System.out.println();
 		}
 	}
 	

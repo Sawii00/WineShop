@@ -6,8 +6,8 @@ import java.util.Random;
  * The {@code Wine} class defines the different kinds of wines.<p>
  * Wines are defined by the name, the producer, the year of production, some technical notes and
  * the grape type. <p>
- * The number specifies how much bottles of wine are available. <p>
- * Each wine is identified by a unique ID.
+ * The {@code number} specifies how much bottles of wine are available. <p>
+ * Each wine is identified by a unique {@code id}.
  */
 
 public class Wine {
@@ -190,11 +190,12 @@ public class Wine {
 	}
 	
 	/**
-	 * @return a String representation of the wine.
+	 * Gives a textual representation of the wine.
+	 * @return id, name, produces, year, technical notes, grape type and amount of bottles of the wine.
 	 */
 	public String toString()
 	{
-		return "ID: "+this.id + ": "+this.name + ", "+this.producer+"("+this.year+") "+ this.technicalNotes+ ", "+this.grapeType+ " AMOUNT: "+this.number;
+		return "ID: "+this.id + ": "+this.name + ", "+this.producer+"("+this.year+") "+this.grapeType+ " AMOUNT: "+this.number + "\nTechnical Notes: " + this.technicalNotes;
 	}
 	
 }

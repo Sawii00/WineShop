@@ -6,19 +6,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
-* The class {@code Store} manages the Wine Shop through methods that work on the inner data structures. <p>
-* It contains lists of wines, clients, sellers and orders. <p>
-* {@code notifRequest} holds the requests of restock notifications made by the users. <p>
-* {@code currSeller} and {@code currClient} hold the currently logged in user (Client and Sellers cannot be simultaneously logged in). <p>
-* NOTE: this implementation does not allow for multiple users logged in simultaneously. Modifications are required in case multiple users have to be served in parallel.
-*/
 
+
+/**
+ * The enum {@code SearchType} helps differentiate between wine searches made by Year of Name.
+ * */
 enum SearchType
 {
 	NAME, YEAR;
 };
 
+
+
+/**
+* The class {@code Store} manages the Wine Shop through methods that work on the inner data structures. <p>
+* It contains lists of wines, clients, sellers and orders. <p>
+* {@code notifRequest} holds the requests of restock notifications made by the users. <p>
+* {@code currSeller} and {@code currClient} hold the currently logged in user (Client and Sellers cannot be simultaneously logged in). <p>
+* NOTE: <p> 
+* This implementation does not allow for multiple users logged in simultaneously.<p>
+* Modifications are required in case multiple users have to be served in parallel. <p>
+* A possible solution would be to pass the user/seller id to each method to allow for authentication and logging.
+*/
 
 public class Store {
 	
@@ -45,17 +54,17 @@ public class Store {
 	*/
 	public Store()
 	{
-		userList.add(new Client("Pippo", "Baudo", "pippo@gmail", "1234"));
-		userList.add(new Client("Mario", "Rossi", "rossi@gmail", "1212"));
-		userList.add(new Client("Giuseppe", "Bianchi", "bianchi@gmail", "3434"));
+		userList.add(new Client("Luca", "Neri", "l.neri@gmail.com", "1234"));
+		userList.add(new Client("Mario", "Rossi", "m.rossi@gmail.com", "1212"));
+		userList.add(new Client("Giuseppe", "Bianchi", "g.bianchi@gmail.com", "3434"));
 		
-		userList.add(new Seller("Ale", "Pindozzi", "pindozz@gmail", "1111"));
+		userList.add(new Seller("Lucia", "Mazza", "l.mazza@gmail.com", "1111"));
 		
-		wineList.add(new Wine(100000, "Cabernet", "Cantina Bianchi", 1980, "Buono", "Uva", 10));
-		wineList.add(new Wine(100001, "Cabernet2", "Cantina Rossi", 2011, "Buono", "Uva", 5));
-		wineList.add(new Wine(100002,"Cabernet3", "Cantina Verdi", 3090, "Buono", "Uva", 100));
-		wineList.add(new Wine(100003, "Cabernet4", "Cantina Violi", 1000, "Buono", "Uva", 1));
-		wineList.add(new Wine(100004, "Cabernet5", "Cantina Gialli", 30, "Buono", "Uva", 0));
+		wineList.add(new Wine(100000, "Aprilia Merlot", "Cantina Violi", 2012, "Asciutto, morbido e armonico", "Merlot", 10));
+		wineList.add(new Wine(100001, "Lambrusco Reggiano", "Cantina Bruni", 2019, "Asciutto, frizzante e di corpo sapido", "Bacca Nera", 5));
+		wineList.add(new Wine(100002, "Carso Malvasia", "Cantina Gialli", 2016, "Asciutto, sapido e fresco", "Malvasia Istriana", 100));
+		wineList.add(new Wine(100003, "Franciacorta Spumante", "Cantina Gialli", 2010, "Fine ed armonico", "Pinot Bianco", 1));
+		wineList.add(new Wine(100004, "Negramaro del Salento", "Cantina Pini", 2020, "Fruttato con sentori di tabacco", "Bacca nera", 14));
 	}
 	
 
@@ -75,7 +84,7 @@ public class Store {
 	* @param list the list in which to search the object.
 	* @param obj the object to find in the list.
 	*
-	* @return True if the object is found, False otherwise.
+	* @return true if the object is found, false otherwise.
 	*/
 	private <T> boolean contains(ArrayList<T> list, T obj)
 	{
@@ -90,7 +99,11 @@ public class Store {
 	}
 	
 	
-	
+	/**
+	 * Checks if a user has already been registered into the store.
+	 * @param usr user to be registered.
+	 * @return true if already existing, false otherwise.
+	 * */
 	private boolean alreadyRegistered(LoggableUser usr)
 	{
 		
@@ -170,15 +183,14 @@ public class Store {
 	{
 		if(!alreadyRegistered(usr))
 		{
-			if(usr instanceof Client)
-				((Client)usr).setID(userList.size());
+			usr.setID(userList.size());
 			userList.add(usr);
 		}
 	}
 
 	/**
 	 * Allows to add a wine to the wineList. <p>
-	 * At first this method check if there is a seller logged in. <p>
+	 * Precondition: a seller is logged in.
 	 * If a seller is logged in it check if the wine you want to add is in wineList. <p>
 	 * If the wine passed as parameter is not in the list it is added to the wineList e 
 	 * added a wineId. <p>
@@ -223,6 +235,7 @@ public class Store {
 		if(w!=null)
 		{
 			w.setNumber(w.getNumber() + extraN);
+			System.out.println("Restocking wine: "+w.getID() + " with "+extraN+" bottles\n");
 			for (Integer i: notifRequest.keySet())
 			{
 				if (i==wineId) 
@@ -230,7 +243,9 @@ public class Store {
 					Entry e = notifRequest.get(i);
 					if((Integer)e.getValue() <= extraN)
 					{
-						getClientByID((Integer)e.getKey()).newMessage("Wine: "+wineId+" is available.");
+						Client c = getClientByID((Integer)e.getKey());
+						System.out.println("Notifying user " + c.getID()+" that the wine is available\n");
+						c.newMessage("Wine: "+wineId+" is available.");
 					}
 				}
 			}
@@ -239,8 +254,10 @@ public class Store {
 	
 	/**
 	* It allows the login of a {@code LoggableUser} to the Store. <p>
+	* It logs out any previous logged-in user.
 	* @param email the user's email.
 	* @param password the user's password.
+	* @return true if email and password are correct, false otherwise.
 	*/
 	public boolean login(String email, String password)
 	{
@@ -253,6 +270,7 @@ public class Store {
 					currClient = (Client)usr;
 				else
 					currSeller = (Seller)usr;
+				System.out.println(usr.toString() +" has logged in\n");
 				((Observer)usr).displayMessages();
 				((Observer)usr).deleteMessages();
 				return true;
@@ -264,9 +282,8 @@ public class Store {
 	
 	/**
 	 * Prints to the standard output the wineList. <p>
-	 * First it is checked if there are clients or sellers logged in. <p>
-	 * If there are any, it print to the std output the list, otherwise specifies that no
-	 * person is logged in.
+	 * Precondition: there are clients or sellers logged in. <p>
+	 * If there are any, it prints to the standard output the list, otherwise displays an error message.
 	 */
 	public void displayWines()
 	{
@@ -285,13 +302,13 @@ public class Store {
 	
 	/**
 	* Displays only the wines that match the specified query. <p>
+	* Precondition: there are clients or sellers logged in. <p>
 	* It employs the search method and therefore allows to show all the wines that match a specified name or year. <p>
-	* Precondition: a user is logged in.
 	*
 	* @param searchText text to be searched
 	* @param searchType type of search (YEAR, NAME)
 	*/
-	public void displayWines(String text, SearchType type)
+	public void displayWines(String searchText, SearchType searchType)
 	{
 		if(currClient == null && currSeller == null)
 		{
@@ -299,7 +316,7 @@ public class Store {
 			return;
 		}
 		
-		for(Wine w: search(text, type))
+		for(Wine w: search(searchText, searchType))
 		{
 			System.out.println(w.toString());
 		}
@@ -308,29 +325,25 @@ public class Store {
 	}
 	
 	/**
-	* Sells {@code amount} bottles of the wine specified by the {@code wineId} to the currently logged-in client. <p>
-	*
-	* @param wineId id of the wine to be bought
-	* @param amount amount of bottles to be bought
-	* @param requestIfNotAvailable express willingness to be notified in case of the absence of the needed amount
-	*
-	*
+	* Searches by Year or Name through the list of wines.
+	* @param searchText text to be searched for.
+	* @param searchType type of search
 	*/
-	private ArrayList<Wine> search(String search_text, SearchType type)
+	private ArrayList<Wine> search(String searchText, SearchType searchType)
 	{
 		ArrayList<Wine> res = new ArrayList<Wine>();
 		
-		if(type == SearchType.NAME)
+		if(searchType == SearchType.NAME)
 		{
 			for(Wine w: wineList)
-				if(w.getName() == search_text)
+				if(w.getName() == searchText)
 					res.add(w);
 			
 		}
-		else if(type == SearchType.YEAR)
+		else if(searchType == SearchType.YEAR)
 		{
 			for(Wine w: wineList)
-				if(w.getYear() == Integer.parseInt(search_text))
+				if(w.getYear() == Integer.parseInt(searchText))
 					res.add(w);
 		}
 		
@@ -348,7 +361,7 @@ public class Store {
 	* @param amount amount of bottles to be bought
 	* @param requestIfNotAvailable express willingness to be notified in case of the absence of the needed amount
 	*
-	*
+	* @return true if the wine is available to be bought, false otherwise.
 	*/
 	public boolean buy(int wineId, int amount, boolean requestIfNotAvailable)
 	{
@@ -363,12 +376,15 @@ public class Store {
 		{
 			if(w.getNumber() > amount)
 			{
+				System.out.println("User: " + currClient.toString() + " is buying "+amount+ " bottles of "+ w.getName() + "\n");
 				w.setNumber(w.getNumber() - amount);
 				orderList.add(new Order(currClient.getID(), new Wine(w.getName(), w.getProducer(), w.getYear(), w.getTechnicalNotes(), w.getGrapeType(), amount)));
 				return true;
 			}
 			else if (w.getNumber()==amount)
 			{
+				System.out.println("User: " + currClient.toString() + " is buying all the bottles of "+ w.getName() + "\n");
+				System.out.println("Notifying all Sellers about this. \n");
 				for (LoggableUser s: userList)
 				{
 					if(s instanceof Seller)
@@ -381,8 +397,11 @@ public class Store {
 			}
 			else
 			{
+				System.out.println("User " + currClient.toString() +" is trying to buy "+w.getName()+ " but there is not enough wine.");
+
 				if(requestIfNotAvailable)
 				{
+					System.out.println("\nYou are requesting to be notified.\n");
 					requestWine(wineId, currClient.getID(), amount);
 				}
 				return false;
@@ -390,6 +409,7 @@ public class Store {
 		}
 		else
 		{
+			System.out.println("User " + currClient.toString() + "is trying to buy a wine that does not exist.");
 			return false;
 		}
 		

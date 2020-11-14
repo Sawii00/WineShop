@@ -22,7 +22,7 @@ public class Order {
 	
 	/**
 	 * Getter for the client.
-	 * @return the client who wants to order wine.
+	 * @return the client that ordered the wine.
 	 */
 	public int getClient() {
 		return client;
@@ -30,7 +30,7 @@ public class Order {
 	
 	/**
 	 * Setter for the client.
-	 * @param client who wants to order wine.
+	 * @param client who ordered the wine.
 	 */
 	public void setClient(int client) {
 		this.client = client;
@@ -38,7 +38,7 @@ public class Order {
 	
 	/**
 	 * Getter for the wine bought.
-	 * @return wine the wine ordered.
+	 * @return wine the wine that was ordered.
 	 */
 	public Wine getWine() {
 		return wine;

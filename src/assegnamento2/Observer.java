@@ -3,7 +3,7 @@ package assegnamento2;
 
 /**
  * The {@code Observer} interface is used to implement the Observer Design Pattern. <p>
- * {@code Client} and {@code Seller} have to implement the Interface to enable the receipt of notifications.
+ * {@code Client} and {@code Seller} implement the Interface to enable the receipt of notifications.
  * */
 public interface Observer {
 

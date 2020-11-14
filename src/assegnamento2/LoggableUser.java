@@ -1,81 +1,77 @@
 package assegnamento2;
 
+import java.util.Random;
 
 /**
- * The {@code LoggableUser} class defines a generic person who attends the club. <p>
- * This class will be extended by the Seller Class and Client Class to distinguish 
- * between different roles. <p>
- * The {@code LoggableUser} class defines methods to get person's name, surname, email and passwords
- * and to set them. <p>
- * There is also a list of messages that notifies the seller if there are some wines that
- * need to be restocked or the client if the wine that he ordered is available.
+ * The {@code LoggableUser} class defines a generic person with log-in functionality. <p>
+ * This class will be extended by the Seller Class and Client Class to implement log-in to the store<p>
+ * It defines getters and setters for email, password and Id. <p>
+ * It extends {@code Person} to add name and surname.
  */
 
-public abstract class LoggableUser
+public class LoggableUser extends Person
 {
 	/**
 	 * Class constructor.
-	 * 
-	 * @param name name of the person.
-	 * @param surname surname of the  person.
-	 * @param email email of the  person.
-	 * @param password password of the  person.
+	 * @param id id of the user.
+	 * @param name name of the user.
+	 * @param surname surname of the user.
+	 * @param email email of the user.
+	 * @param password password of the user.
 	 */
 
-	public LoggableUser(String name, String surname, String email, String password)
+	public LoggableUser(int id, String name, String surname, String email, String password)
 	{
-		this.name = name;
-		this.surname = surname;
+		super(name, surname);
 		this.email = email;
 		this.password = password;
+		this.id = id;
 	}
 	
-	protected String name;
-	protected String surname;
+	/**
+	 * Class constructor. <p> 
+	 * ID is automatically generated since not provided.
+	 * @param name name of the user.
+	 * @param surname surname of the user.
+	 * @param email email of the user.
+	 * @param password password of the user.
+	 */
+	public LoggableUser(String name, String surname, String email, String password)
+	{
+		super(name, surname);
+		this.email = email;
+		this.password = password;
+		Random r = new Random();
+		this.id = r.nextInt();
+	}
+	
+	protected int id;
 	protected String email;
 	protected String password;
 	 
-	
-	/**
-	 * Getter for the person's name.
-	 * @return the person's name.
-	 */
-	public String getName() 
-	{
-		return name;
-	}
 
 	/**
-	 * Setter for the person's name.
-	 * @param name of the person.
+	 * Getter for the user's Id.
+	 * @return the user's Id.
 	 */
-	protected void setName(String name)
+	public int getID()
 	{
-		this.name = name;
-	}
-
-	/**
-	 * Getter for the person's surname.
-	 * @return surname of the person.
-	 */
-	public String getSurname() 
-	{
-		return surname;
+		return id;
 	}
 	
 	/**
-	 * Setter for the person's surname.
-	 * @param surname of the person.
+	 * Setter for the user's Id.
+	 * @param the user's Id.
 	 */
-
-	protected void setSurname(String surname) 
+	public void setID(int id)
 	{
-		this.surname = surname;
+		this.id = id;
 	}
+	
 
 	/**
-	 * Getter for the person's email.
-	 * @return email of the person.
+	 * Getter for the user's email.
+	 * @return email of the user.
 	 */
 	public String getEmail() 
 	{
@@ -83,8 +79,8 @@ public abstract class LoggableUser
 	}
 	
 	/**
-	 * Getter for the person's password.
-	 * @return password of the person.
+	 * Getter for the user's password.
+	 * @return password of the user.
 	 */
 
 	public String getPassword()
@@ -93,8 +89,8 @@ public abstract class LoggableUser
 	}
 	
 	/**
-	 * Setter for the person's email.
-	 * @param email of the person.
+	 * Setter for the user's email.
+	 * @param email of the user.
 	 */
 	protected void setEmail(String email)
 	{
@@ -102,8 +98,8 @@ public abstract class LoggableUser
 	}
 	
 	/**
-	 * Setter for the person's password.
-	 * @param passowrd of the person.
+	 * Setter for the user's password.
+	 * @param password of the user.
 	 */
 	
 	protected void setPassword(String password)
@@ -112,13 +108,13 @@ public abstract class LoggableUser
 	}
 	
 	/**
-	 * Gives a textual representation of the person.
-	 * @return the person's name, his surname and his email.
+	 * Gives a textual representation of the user.
+	 * @return the user's id, name, his surname and his email.
 	 */
 	
 	public String toString()
 	{
-		return this.name+" "+this.surname+", "+this.email;
+		return this.id + ", "+super.toString()+", "+this.email;
 	}
 	
 

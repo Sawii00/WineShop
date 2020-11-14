@@ -14,21 +14,21 @@ public class Main {
 
 		Store store = new Store();
 		
-		store.login("pippo@gmail", "1234");
+		store.login("l.neri@gmail.com", "1234");
 		store.displayWines();
 		store.buy(100002, 20, false);
 		store.displayWines();
-		store.login("bianchi@gmail", "3434");
+		store.login("g.bianchi@gmail.com", "3434");
 		store.buy(100000, 10, false);
 		store.displayWines();
-		store.login("rossi@gmail", "1212");
-		store.displayWines();
+		store.login("m.rossi@gmail.com", "1212");
+		//requesting to be notified
 		store.buy(100000, 15, true);
 		store.displayWines();
-		store.login("pindozz@gmail", "1111");
+		store.login("l.mazza@gmail.com", "1111");
 		store.restockWine(100000, 15);
 		store.displayWines();
-		store.login("rossi@gmail", "1212");
+		store.login("m.rossi@gmail.com", "1212");
 
 	}
 
