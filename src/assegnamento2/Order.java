@@ -30,7 +30,7 @@ public class Order {
 	
 	/**
 	 * Setter for the client.
-	 * @param client who ordered the wine.
+	 * @param clientID who ordered the wine.
 	 */
 	public void setClient(int clientID) {
 		this.clientID = clientID;

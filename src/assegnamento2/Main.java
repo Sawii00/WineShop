@@ -25,8 +25,10 @@ public class Main {
 		store.displayWines("100000", SearchType.ID);
 		//another customer logs in
 		store.login("m.rossi@gmail.com", "1212");
-		//he tries to buy the wine 100000 and requests to be notified in case not enough bottles are available
-		store.buy(100000, 15, true);
+		//he tries to buy the wine 100000 but there are not enough bottles, therefore nothing is bought
+		store.buy(100000, 15, false);
+		//he asks to be notified when 15 bottles become available
+		store.requestWine(100000, 15);
 		//the sellers logs in and should see the notification that a wine has run out of bottles
 		store.login("l.mazza@gmail.com", "1111");
 		//the seller re-stocks the wine 100000

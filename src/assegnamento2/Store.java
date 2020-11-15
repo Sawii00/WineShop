@@ -426,8 +426,7 @@ public class Store {
 
 				if(requestIfNotAvailable)
 				{
-					System.out.println("\nUser "+currClient.getName() + " " + currClient.getSurname() + "(" + currClient.getID() + ") has requested to be notified.\n");
-					requestWine(wineId, currClient.getID(), amount);
+					requestWine(wineId, amount);
 				}
 				return false;
 			}
@@ -441,16 +440,16 @@ public class Store {
 	}
 	
 	/**
-	 * A notify is sent to to the seller, so that he knows which wine needs to be restocked,
-	 * and which client did the order.
+	 * A notification request for the specified amount of wine associated with the current client is saved. <p>
+	 * When the amount is available, the client will be warned with a message. <p>
+     * Precondition: a client is logged in.
 	 * @param wineId the id of the wine that allows to uniquely identify it.
-	 * @param clientId the id of the person that allows to uniquely identify him.
 	 * @param amount the numbers of bottles requested. 
 	 */
-	private void requestWine(int wineId, int clientId, int amount)
+	public void requestWine(int wineId, int amount)
 	{
 		if(currClient == null)return;
-
-		notifRequest.put(wineId, new AbstractMap.SimpleEntry<Integer, Integer>(clientId,amount));
+		System.out.println("\nUser "+currClient.getName() + " " + currClient.getSurname() + "(" + currClient.getID() + ") has requested to be notified.\n");
+		notifRequest.put(wineId, new AbstractMap.SimpleEntry<Integer, Integer>(currClient.getID(),amount));
 	}
 }
