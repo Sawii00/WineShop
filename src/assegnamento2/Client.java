@@ -5,7 +5,8 @@ import java.util.Random;
 
 
 /**
- * The {@code Client} class defines a person that: <p>
+ *The {@code Client} class defines a Shop's Customer. <p>
+ * He can: <p>
  * - Can buy wines. <p>
  * - Can order wine if it is not available in the store. <p>
  * Each client is defined by an Id. <p>
@@ -14,7 +15,6 @@ import java.util.Random;
  */
 public class Client extends LoggableUser implements Observer{
 
-	private int id;	
 	protected ArrayList<String> messages=new ArrayList<String>();
 
 	/**

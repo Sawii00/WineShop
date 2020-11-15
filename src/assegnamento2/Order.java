@@ -6,7 +6,7 @@ package assegnamento2;
  */
 public class Order {
 	
-	private int client;
+	private int clientID;
 	private Wine wine;
 	
 	/**
@@ -16,7 +16,7 @@ public class Order {
 	 */
 	public Order(int c, Wine w)
 	{
-		client = c;
+		clientID = c;
 		wine = w;
 	}
 	
@@ -25,15 +25,15 @@ public class Order {
 	 * @return the client that ordered the wine.
 	 */
 	public int getClient() {
-		return client;
+		return clientID;
 	}
 	
 	/**
 	 * Setter for the client.
 	 * @param client who ordered the wine.
 	 */
-	public void setClient(int client) {
-		this.client = client;
+	public void setClient(int clientID) {
+		this.clientID = clientID;
 	}
 	
 	/**

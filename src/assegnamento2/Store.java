@@ -9,11 +9,11 @@ import java.util.Map.Entry;
 
 
 /**
- * The enum {@code SearchType} helps differentiate between wine searches made by Year of Name.
+ * The enum {@code SearchType} helps differentiate between wine searches made by Year, Name or ID.
  * */
 enum SearchType
 {
-	NAME, YEAR;
+	NAME, YEAR, ID;
 };
 
 
@@ -31,26 +31,42 @@ enum SearchType
 
 public class Store {
 	
+	/**
+	 * List of wines owned by the shop.
+	 * */
 	private ArrayList<Wine> wineList=new ArrayList<Wine>();
+	
+	/**
+	 * List of orders from clients.
+	 * */
 	private ArrayList<Order> orderList=new ArrayList<Order>();
 	
-	
+	/**
+	 * List of LoggableUsers of the system. Both Clients and Sellers are stored here.
+	 * */
 	private ArrayList<LoggableUser> userList = new ArrayList<LoggableUser>();
 	
 	/**
-	 * Map of notification requests: <p>
+	 * Map of notification requests. <p>
 	 * - Wine ID <p>
 	 * - Client ID <p>
 	 * - Amount of bottles
 	 * */
 	private Map<Integer, Entry <Integer,Integer>> notifRequest=new HashMap<Integer,Entry<Integer,Integer>>();
 	
+	/**
+	 * Currently logged-in client.
+	 * */
 	private Client currClient = null;
+	
+	/**
+	 * Currently logged-in seller.
+	 * */
 	private Seller currSeller = null;
 	
 	/**
 	* Class Constructor. <p>
-	* It sets up an initial list of {@code Wines} available in the Store, some registered {@code Clients}, and one {@code Seller}. <p>
+	* It sets up an initial list of {@code Wines} available in the Store, some registered {@code Clients}, and one {@code Seller}.
 	*/
 	public Store()
 	{
@@ -69,7 +85,7 @@ public class Store {
 	
 
 	/**
-	* It logs out the currently logged-in user by setting to {@code null} {@code currClient} and {@code currSeller}.
+	* Logs out the currently logged-in user by setting to {@code null} {@code currClient} and {@code currSeller}.
 	*/
 	private void logout()
 	{
@@ -81,6 +97,7 @@ public class Store {
 	* Generic method that returns whether an object is included in a list based on the string representation. <p>
 	* It allows to check if a list contains an object without having to match the object's memory address (it only confronts inner data).
 	*
+	* @param <T> Any data type. Specifically used with Wines and LoggableUsers
 	* @param list the list in which to search the object.
 	* @param obj the object to find in the list.
 	*
@@ -122,6 +139,7 @@ public class Store {
 	* Employs the {@code contains} method to check if a suitable match is found. <p>
 	* If no matching object is found, it returns {@code null}.
 	*
+	* @param <T> Any data type. Specifically used with Wines and LoggableUsers
 	* @param list the list in which to search the object.
 	* @param obj the object to find in the list.
 	*
@@ -146,11 +164,11 @@ public class Store {
 	*
 	* @return the wine if found, null otherwise.
 	*/
-	private Wine getWineByID(int id)
+	private Wine getWineByID(int wineId)
 	{
 		for(Wine w: wineList)
 		{
-			if(w.getID() == id)
+			if(w.getID() == wineId)
 				return w;
 		}
 		return null;
@@ -163,11 +181,11 @@ public class Store {
 	*
 	* @return the client if found, null otherwise.
 	*/
-	private Client getClientByID(int id)
+	private Client getClientByID(int clientId)
 	{
 		for(LoggableUser w: userList)
 		{
-			if(w instanceof Client && ((Client)w).getID() == id)
+			if(w instanceof Client && ((Client)w).getID() == clientId)
 				return (Client)w;
 		}
 		return null;
@@ -189,7 +207,7 @@ public class Store {
 	}
 
 	/**
-	 * Allows to add a wine to the wineList. <p>
+	 * Adds a wine to the wineList. <p>
 	 * Precondition: a seller is logged in.
 	 * If a seller is logged in it check if the wine you want to add is in wineList. <p>
 	 * If the wine passed as parameter is not in the list it is added to the wineList e 
@@ -240,7 +258,7 @@ public class Store {
 			{
 				if (i==wineId) 
 				{
-					Entry e = notifRequest.get(i);
+					Entry<Integer, Integer> e = notifRequest.get(i);
 					if((Integer)e.getValue() <= extraN)
 					{
 						Client c = getClientByID((Integer)e.getKey());
@@ -281,7 +299,7 @@ public class Store {
 	
 	
 	/**
-	 * Prints to the standard output the wineList. <p>
+	 * Displays all the wines. <p>
 	 * Precondition: there are clients or sellers logged in. <p>
 	 * If there are any, it prints to the standard output the list, otherwise displays an error message.
 	 */
@@ -306,7 +324,7 @@ public class Store {
 	* It employs the search method and therefore allows to show all the wines that match a specified name or year. <p>
 	*
 	* @param searchText text to be searched
-	* @param searchType type of search (YEAR, NAME)
+	* @param searchType type of search (YEAR, NAME, ID)
 	*/
 	public void displayWines(String searchText, SearchType searchType)
 	{
@@ -325,9 +343,10 @@ public class Store {
 	}
 	
 	/**
-	* Searches by Year or Name through the list of wines.
-	* @param searchText text to be searched for.
+	* Searches by Year or Name or ID through the list of wines.
+	* @param searchText text to be searched for
 	* @param searchType type of search
+	* @return list of wines that match the query
 	*/
 	private ArrayList<Wine> search(String searchText, SearchType searchType)
 	{
@@ -344,6 +363,12 @@ public class Store {
 		{
 			for(Wine w: wineList)
 				if(w.getYear() == Integer.parseInt(searchText))
+					res.add(w);
+		}
+		else
+		{
+			for(Wine w: wineList)
+				if(w.getID() == Integer.parseInt(searchText))
 					res.add(w);
 		}
 		
@@ -401,7 +426,7 @@ public class Store {
 
 				if(requestIfNotAvailable)
 				{
-					System.out.println("\nYou are requesting to be notified.\n");
+					System.out.println("\nUser "+currClient.getName() + " " + currClient.getSurname() + "(" + currClient.getID() + ") has requested to be notified.\n");
 					requestWine(wineId, currClient.getID(), amount);
 				}
 				return false;
@@ -426,6 +451,6 @@ public class Store {
 	{
 		if(currClient == null)return;
 
-		notifRequest.put(wineId, new AbstractMap.SimpleEntry(clientId,amount));
+		notifRequest.put(wineId, new AbstractMap.SimpleEntry<Integer, Integer>(clientId,amount));
 	}
 }

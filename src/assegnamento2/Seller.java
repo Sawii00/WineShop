@@ -3,7 +3,8 @@ package assegnamento2;
 import java.util.ArrayList;
 
 /**
- * The {@code Seller} class defines a person that: <p>
+ * The {@code Seller} class defines a Shop's Employee. <p>
+ * He can: <p>
  * - Can manage the store through wine adding or removal <p>
  * - Can re-stock the bottles of wines that are not available. <p>
  * - Receives a notification if the store has run out of bottles of a specific wine. <p>

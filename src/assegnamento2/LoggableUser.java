@@ -42,7 +42,7 @@ public class LoggableUser extends Person
 		this.email = email;
 		this.password = password;
 		Random r = new Random();
-		this.id = r.nextInt();
+		this.id = r.nextInt(1000000);
 	}
 	
 	protected int id;
@@ -61,9 +61,9 @@ public class LoggableUser extends Person
 	
 	/**
 	 * Setter for the user's Id.
-	 * @param the user's Id.
+	 * @param id user's Id.
 	 */
-	public void setID(int id)
+	protected void setID(int id)
 	{
 		this.id = id;
 	}
